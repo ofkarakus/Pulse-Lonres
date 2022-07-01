@@ -16,7 +16,7 @@ export default function Pulse({ models }) {
     const [propertyData, setPropertyData] = useState(models);
 
     useEffect(() => {
-        // connect to the socket
+        // connect to the socket when the component mounts
         const propertySocket = socket.on('property', (data) => {
             setPropertyData((prevState) => {
                 if (
@@ -34,7 +34,7 @@ export default function Pulse({ models }) {
             });
         });
 
-        // unmounting the component will disconnect the socket
+        // disconnect the socket when the component unmounts
         return () => propertySocket.off('property');
     }, []);
 
