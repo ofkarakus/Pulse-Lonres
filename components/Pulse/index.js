@@ -2,6 +2,10 @@ import PropTypes from 'prop-types';
 import dynamic from 'next/dynamic';
 import Properties from '@app/Properties';
 import * as e from './styles';
+import { io } from 'socket.io-client';
+import { useEffect, useState } from 'react';
+
+const socket = io('http://localhost:3000');
 
 const Map = dynamic(() => import('@app/Map'), {
     ssr: false,
@@ -9,10 +13,35 @@ const Map = dynamic(() => import('@app/Map'), {
 });
 
 export default function Pulse({ models }) {
+    const [propertyData, setPropertyData] = useState(models);
+
+    useEffect(() => {
+        // connect to the socket
+        const propertySocket = socket.on('property', (data) => {
+            setPropertyData((prevState) => {
+                if (
+                    prevState.findIndex(
+                        (property) => property.address1 === data.message.model.address1
+                    ) === -1
+                ) {
+                    return [data.message.model, ...prevState];
+                } else {
+                    const tempState = prevState.filter(
+                        (property) => property.address1 !== data.message.model.address1
+                    );
+                    return [data.message.model, ...tempState];
+                }
+            });
+        });
+
+        // unmounting the component will disconnect the socket
+        return () => propertySocket.off('property');
+    }, []);
+
     return (
         <e.Container>
-            <Map models={models} />
-            <Properties models={models} />
+            <Map models={propertyData} />
+            <Properties models={propertyData} />
         </e.Container>
     );
 }
