@@ -1,6 +1,10 @@
 import PropTypes from 'prop-types';
-import Property from '@app/Property';
 import * as e from './styles';
+import dynamic from 'next/dynamic';
+
+const Property = dynamic(() => import('@app/Property'), {
+    ssr: false,
+});
 
 export default function Properties({ models }) {
     return (
