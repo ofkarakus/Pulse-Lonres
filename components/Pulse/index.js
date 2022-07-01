@@ -3,7 +3,9 @@ import dynamic from 'next/dynamic';
 import Properties from '@app/Properties';
 import * as e from './styles';
 import { io } from 'socket.io-client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, createContext, useRef } from 'react';
+
+export const MapContext = createContext();
 
 const socket = io('http://localhost:3000');
 
@@ -14,6 +16,7 @@ const Map = dynamic(() => import('@app/Map'), {
 
 export default function Pulse({ models }) {
     const [propertyData, setPropertyData] = useState(models);
+    const mapRef = useRef();
 
     useEffect(() => {
         // connect to the socket when the component mounts
@@ -40,8 +43,10 @@ export default function Pulse({ models }) {
 
     return (
         <e.Container>
-            <Map models={propertyData} />
-            <Properties models={propertyData} />
+            <MapContext.Provider value={{ mapRef }}>
+                <Map models={propertyData} />
+                <Properties models={propertyData} />
+            </MapContext.Provider>
         </e.Container>
     );
 }
