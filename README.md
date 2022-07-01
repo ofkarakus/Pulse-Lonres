@@ -1,6 +1,4 @@
-## Introduction
-
-In giving candidates small tasks to complete as part of the job interview process, we like to choose a task that is relevant to the job. The task described below is a slightly simplified but genuine task we had at LonRes which we solved programmatically. We are interested to know how you'd solve the same problem.
+# Lonres Technical Interview Task Solution
 
 ## Task
 
